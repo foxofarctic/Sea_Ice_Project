@@ -1,13 +1,13 @@
 % wind test
 clear;
-addpath('/media/lucas/07A5541E0CB71F94/IRIS/IRIS_Sea_Ice/matlab/ReadMSEEDFast.m');
-% addpath('ReadMSEEDFast.m');
+addpath('/media/lucas/Elements/IRIS_Sea_Ice/matlab/ReadMSEEDFast.m');
 
-X = ReadMSEEDFast('/media/lucas/07A5541E0CB71F94/IRIS/IRIS_Sea_Ice/matlab/windyFun/A19K.TA.mseed');
+X = ReadMSEEDFast('/media/lucas/Elements/IRIS_Sea_Ice/matlab/windyFun/A19K.TA.mseed');
 % X = ReadMSEEDFast('data/A19K.TA.mseed');
 %%
-load('/media/lucas/07A5541E0CB71F94/IRIS/IRIS_Sea_Ice/matlab/windyFun/A19K_PSD_full_data.mat');
-% load('data/A19K_PSD_full_data.mat');
+load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/windyFun/A19K_PSD_full_data.mat');
+% timeStr1 is a list of corresponding times for each entry
+% data is power for each hour
 
 %% frequencies we want
 % rangel= 1/20; rangem= 1/13; micName = 'Primary'; %primary
@@ -23,7 +23,7 @@ k = find((xfreq > rangel) & (xfreq < rangem)); %indices of all frequencies in an
 binnedData = mean(data(k,:),1);
 % end
 
-%% matching them up
+%% gets all days wind data is available -- puts it in windDays
 
 timePSD = datetime(timeStr1);
 for i=1:length(X)
@@ -37,16 +37,16 @@ for i=1:20 %length(timePSD)
     if ind
                
         % this part makes it slow
-         
-        if ind < length(X) % for when hour bleeds to next day
-%             windSec = [datetime(datestr(X(ind).matlabTimeVector))' datetime(datestr(X(ind+1).matlabTimeVector(1:3600)))'];
-            windSec = [datetime(datestr(X(ind).matlabTimeVector))' datetime(datestr(X(ind+1).matlabTimeVector))'];
-            windData = [X(ind).data' X(ind+1).data'];
+        if ind < length(X) % for when hour bleeds to next day -- adds 1 hour of next day
+            windSec = [datetime(datestr(X(ind).matlabTimeVector))' datetime(datestr(X(ind+1).matlabTimeVector(1:3600)))'];
+            windData = [X(ind).data' X(ind+1).data(1:3600)'];
         else
+            % only if last X entry
             windSec = datetime(datestr(X(ind).matlabTimeVector));
             windData = X(ind).data;
         end
         
+        % finds indices of beginning and end of PSD
         [d indl] = min(abs(windSec - timePSD(i)));
         [d indh] = min(abs(windSec - (timePSD(i)+hours(1))));        
 

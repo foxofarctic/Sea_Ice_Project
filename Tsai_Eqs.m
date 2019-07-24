@@ -3,15 +3,16 @@ clear;
 load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/ice_data_aug21_13_jun1_19.mat');
 %%
 addpath('/media/lucas/Elements/IRIS_Sea_Ice/matlab');
-info.a = {'A36M','Q23K'};
+info.a = {'A19K','Q23K'};
 
-
+dlat(:) = [70.2043,59.4296]; %desire lat - A19K,Q23K
+dlon(:) = [-161.071304,-146.339905]; %A19K,Q23K
 % dlat(:) = [71.322098,59.4296]; %desire lat - A21K,Q23K
 % dlon(:) = [-156.617493,-146.339905]; %A21K,Q23K
 % dlat(:) = [69.347504,59.4296]; %desire lat - C36M,Q23K
 % dlon(:) = [-124.070297,-146.339905]; %C36M,Q23K
-dlat(:) = [71.987099,59.4296]; %desire lat - A36M,Q23K
-dlon(:) = [-125.2472,-146.339905]; %A36M,Q23K
+% dlat(:) = [71.987099,59.4296]; %desire lat - A36M,Q23K
+% dlon(:) = [-125.2472,-146.339905]; %A36M,Q23K
 
 start ='2013-08-21';
 % start ='2013-08-22';
@@ -45,10 +46,10 @@ while i <= length(dlat)
     end
 end
 %% bin frequencies into average
-% rangel= 1/20; rangem= 1/13; micName = 'Primary'; %primary
+rangel= 1/20; rangem= 1/13; micName = 'Primary'; %primary
 % rangel= 1/10; rangem= 1/5; micName = 'Secondary'; %secondary
 % rangel= 1/5; rangem= 1/2.5; micName = 'Short'; %short
-rangel= 1/2; rangem= 1/1; micName = 'Short Short';%short short
+% rangel= 1/2; rangem= 1/1; micName = 'Short Short';%short short
 
 
 k = find((freqTemp > rangel) & (freqTemp < rangem)); %indices of all frequencies in any microseism range
@@ -70,6 +71,12 @@ end
 %     norm_bin_data(:,i) = (binnedData(:,i)-min(binnedData(:,i)))/ (max(binnedData(:,i))-min(binnedData(:,i)));
 % end
 
+%% robust fit
+xdat = [binnedData(:,2) ci(2:length(ci),1)];
+b = robustfit(xdat,binnedData(:,1));
+
+
+
 %% do parametrization
 xydat = [binnedData(1:length(binnedData),2) ci(2:length(ci),1) binnedData(1:length(binnedData),1) dates'];
 xydat1 = (xydat(isfinite(xydat(:, 1)), :));
@@ -87,20 +94,21 @@ figure(1);clf; hold on
 subplot(2,1,1);hold on
 plot(datesLeft, ydata,'r-','LineWidth',2);
 plot(datesLeft, fun(ps,xdata),'b-','LineWidth', 2);
+plot(datesLeft,fun(b,xdata),'LineWidth', 2);
 
 ylabel('Power(dB)'); 
 cor = corrcoef(ydata,fun(ps,xdata));
 yl = ylim;
 xl = xlim;
 text(xl(2)-250,yl(2),sprintf('corrcoeff: %.6f',cor(1,2)));
-legend(sprintf('%s Observed',char(info.a(1))),'Tsai Equation')
+legend(sprintf('%s Observed',char(info.a(1))),'Tsai Equation', 'Robust Fit')
 title(sprintf('%s Data and Fitted Tsai Equation -- %s',char(info.a(1)),micName))
 datetick;
 
 subplot(2,1,2); hold on
 plot(datesLeft,movmean(ydata,14),'r-','LineWidth',2);
 plot(datesLeft,movmean(fun(ps,xdata),14),'b-','LineWidth', 2);
-
+plot(datesLeft,movmean(fun(b,xdata),14),'LineWidth', 2);
 
 cor = corrcoef(movmean(ydata,14),movmean(fun(ps,xdata),14));
 yl = ylim;
@@ -116,6 +124,7 @@ figure(3);clf; hold on
 % subplot(2,1,2);hold on
 plot(datesLeft,movmean(ydata,14),'r-','LineWidth',2);
 plot(datesLeft,movmean(fun(ps,xdata),14),'b-','LineWidth', 2);
+plot(datesLeft,movmean(fun(b,xdata),14),'LineWidth', 2);
 
 
 cor = corrcoef(movmean(ydata,14),movmean(fun(ps,xdata),14));
@@ -126,6 +135,6 @@ title(sprintf('%s - 14 Day Smoothed Version -- %s', char(info.a(1)),micName ));
 datetick;
 xlabel('Date');
 ylabel('Power(dB)'); 
-legend(sprintf('%s Observed',char(info.a(1))),'Tsai Equation')
+legend(sprintf('%s Observed',char(info.a(1))),'Tsai Equation','Robust Fit')
 
 
