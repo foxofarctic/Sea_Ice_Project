@@ -2,11 +2,29 @@
 clear;
 load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/ice_data_aug21_13_jun1_19.mat');
 %%
+tic
 addpath('/media/lucas/Elements/IRIS_Sea_Ice/matlab');
-info.a = {'A19K','Q23K'};
-
-dlat(:) = [70.2043,59.4296]; %desire lat - A19K,Q23K
-dlon(:) = [-161.071304,-146.339905]; %A19K,Q23K
+info.a = {'A22K','Q23K'};
+dlat(:) = [71.003304,59.4296]; %desire lat - A22K,Q23K
+dlon(:) = [-154.974197,-146.339905]; %A22K,Q23K
+% dlat(:) = [70.339996,59.4296]; %desire lat - B22K,Q23K
+% dlon(:) = [-153.419601,-146.339905]; %B22K,Q23K
+% dlat(:) = [69.835999,59.4296]; %desire lat - C23K,Q23K
+% dlon(:) = [-150.612595,-146.339905]; %C23K,Q23K
+% dlat(:) = [69.720001,59.4296]; %desire lat - C24K,Q23K
+% dlon(:) = [-148.700897,-146.339905]; %C24K,Q23K
+% dlat(:) = [69.917503,59.4296]; %desire lat - C26K,Q23K
+% dlon(:) = [-144.912201,-146.339905]; %C26K,Q23K
+% dlat(:) = [69.625999,59.4296]; %desire lat - C27K,Q23K
+% dlon(:) = [-143.711395,-146.339905]; %C27K,Q23K
+% dlat(:) = [69.242996,59.4296]; %desire lat - D27M,Q23K
+% dlon(:) = [-140.964798,-146.339905]; %D27M,Q23K
+% dlat(:) = [69.328598,59.4296]; %desire lat - D28M,Q23K
+% dlon(:) = [-138.736694,-146.339905]; %D28M,Q23K
+% dlat(:) = [68.388901,59.4296]; %desire lat - E29M,Q23K
+% dlon(:) = [-137.896896,-146.339905]; %E29M,Q23K
+% dlat(:) = [70.2043,59.4296]; %desire lat - A19K,Q23K
+% dlon(:) = [-161.071304,-146.339905]; %A19K,Q23K
 % dlat(:) = [71.322098,59.4296]; %desire lat - A21K,Q23K
 % dlon(:) = [-156.617493,-146.339905]; %A21K,Q23K
 % dlat(:) = [69.347504,59.4296]; %desire lat - C36M,Q23K
@@ -22,6 +40,7 @@ for i = 1:length(info.a)
 end
 % turn all 0 data to NaN
 dataTemp(dataTemp(:,:,:) == 0) = NaN;
+toc
 %% set frequency and pixel specifications
 dates1 = [datenum(start):datenum(en)-1];
 
@@ -46,10 +65,10 @@ while i <= length(dlat)
     end
 end
 %% bin frequencies into average
-rangel= 1/20; rangem= 1/13; micName = 'Primary'; %primary
+% rangel= 1/20; rangem= 1/13; micName = 'Primary'; %primary
 % rangel= 1/10; rangem= 1/5; micName = 'Secondary'; %secondary
 % rangel= 1/5; rangem= 1/2.5; micName = 'Short'; %short
-% rangel= 1/2; rangem= 1/1; micName = 'Short Short';%short short
+rangel= 1/2; rangem= 1/1; micName = 'Short Short';%short short
 
 
 k = find((freqTemp > rangel) & (freqTemp < rangem)); %indices of all frequencies in any microseism range
@@ -74,43 +93,31 @@ end
 %% robust fit
 xdat = [binnedData(:,2) ci(2:length(ci),1)];
 b = robustfit(xdat,binnedData(:,1));
-
-
-
-%% do parametrization
-xydat = [binnedData(1:length(binnedData),2) ci(2:length(ci),1) binnedData(1:length(binnedData),1) dates'];
-xydat1 = (xydat(isfinite(xydat(:, 1)), :));
-xydat1 = (xydat1(isfinite(xydat1(:, 3)), :));
-xdata = xydat1(:,1:2);
-ydata = xydat1(:,3);
-datesLeft = xydat1(:,4);
 fun = @(ps,xdata)ps(1)+(ps(2)*xdata(:,1))+(ps(3)*xdata(:,2));
-x0 = [-24.516 0.8314 -23.438];
-ps = lsqcurvefit(fun,x0,xdata,ydata);
 
 %% plot Tsai curve
 figure(1);clf; hold on
 
 subplot(2,1,1);hold on
-plot(datesLeft, ydata,'r-','LineWidth',2);
-plot(datesLeft, fun(ps,xdata),'b-','LineWidth', 2);
-plot(datesLeft,fun(b,xdata),'LineWidth', 2);
+
+% plot(datesLeft, fun(ps,xdata),'b-','LineWidth', 2);
+plot(dates1,fun(b,xdat),'LineWidth', 2);
+plot(dates1, binnedData(:,1),'r-','LineWidth',2);
 
 ylabel('Power(dB)'); 
-cor = corrcoef(ydata,fun(ps,xdata));
+cor = corrcoef(binnedData(:,1),fun(b,xdat),'Rows','complete');
 yl = ylim;
 xl = xlim;
 text(xl(2)-250,yl(2),sprintf('corrcoeff: %.6f',cor(1,2)));
-legend(sprintf('%s Observed',char(info.a(1))),'Tsai Equation', 'Robust Fit')
+legend(sprintf('%s Observed',char(info.a(1))),'Tsai Equation - Robust')
 title(sprintf('%s Data and Fitted Tsai Equation -- %s',char(info.a(1)),micName))
 datetick;
 
 subplot(2,1,2); hold on
-plot(datesLeft,movmean(ydata,14),'r-','LineWidth',2);
-plot(datesLeft,movmean(fun(ps,xdata),14),'b-','LineWidth', 2);
-plot(datesLeft,movmean(fun(b,xdata),14),'LineWidth', 2);
+plot(dates1,movmean(binnedData(:,1),14),'r-','LineWidth',2);
+plot(dates,movmean(fun(b,xdat),14),'b-','LineWidth', 2);
 
-cor = corrcoef(movmean(ydata,14),movmean(fun(ps,xdata),14));
+cor = corrcoef(movmean(binnedData(:,1),14),movmean(fun(b,xdat),14),'Rows','complete');
 yl = ylim;
 xl = xlim;
 text(xl(2)-250,yl(2),sprintf('corrcoeff: %.6f',cor(1,2)));
@@ -123,11 +130,10 @@ ylabel('Power(dB)');
 figure(3);clf; hold on
 % subplot(2,1,2);hold on
 plot(datesLeft,movmean(ydata,14),'r-','LineWidth',2);
-plot(datesLeft,movmean(fun(ps,xdata),14),'b-','LineWidth', 2);
 plot(datesLeft,movmean(fun(b,xdata),14),'LineWidth', 2);
 
 
-cor = corrcoef(movmean(ydata,14),movmean(fun(ps,xdata),14));
+cor = corrcoef(ydata,movmean(fun(b,xdata),14));
 yl = ylim;
 xl = xlim;
 text(xl(2)-250,yl(2),sprintf('corrcoeff: %.6f',cor(1,2)));

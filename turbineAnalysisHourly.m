@@ -52,7 +52,7 @@ for i=1:20 %length(timePSD)
 
         
         % checks there was at least 40 minutes of data for the hour
-        if minutes(windSec(indh)-windSec(indl)) >= 40 
+        if indh - indl > 2400 & indh-indl < 3610 
             windHourly(i) = mean(windData(indl:indh))/10;
         else
             windHourly(i) = NaN;
