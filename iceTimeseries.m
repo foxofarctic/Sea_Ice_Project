@@ -1,20 +1,18 @@
 %% get ice data and spec data
 clear;
-load('/media/lucas/07A5541E0CB71F94/IRIS/IRIS_Sea_Ice/matlab/iceData/ice_data_aug21_13_jun1_19.mat');
+load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/ice_data_aug21_13_jun1_19.mat');
 
 %% extract data from iceDat struct
 lat = iceDat(1).lat;
 lon = iceDat(1).lon;
 dates = datenum('2013-08-21'):datenum('2019-06-01');
-info.a = {'A21K','C36M','Q23K'};
-numpx =16;
+info.a = {'A21K','Q23K'};
+numpx =1;
 
 %% set frequency and pixel specifications also normalizes data
-% fr = 1/2.5;
-fr = 1/25;
-%fr = 1/8; 
-dlat(:) = [71.322098,69.347504,59.4296]; %desired lat
-dlon(:) = [-156.617493,-124.070297,-146.339905];
+
+dlat(:) = [71.322098,59.4296]; %desire lat - A21K,Q23K
+dlon(:) = [-156.617493,-146.339905]; %A21K,Q23K
 
 % finds the pixel closest to station
 i = 1;
@@ -46,11 +44,13 @@ subplot(2,1,1);hold on
 for x=1:numpx
     plot(dates,ci(:,x,1),'LineWidth', 2);
 %     title(char(info.a(1)));
-    datetick;
+
 end
 plot(dates,mean(ci(:,:,1),2),'k-','LineWidth', 2);
 title(sprintf('%s -- Average sea ice for closest %d pixels',char(info.a(1)),numpx))
 ylabel('Ice Concentration (%)');
+datetick;
+% xlim([datenum('2014-05-28') datenum('2015-10-18')])
 
 subplot(2,1,2);hold on
 for x=1:numpx

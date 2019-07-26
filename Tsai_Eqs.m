@@ -4,9 +4,28 @@ load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/ice_data_aug21_13_jun1_1
 %%
 tic
 addpath('/media/lucas/Elements/IRIS_Sea_Ice/matlab');
-info.a = {'A22K','Q23K'};
-dlat(:) = [71.003304,59.4296]; %desire lat - A22K,Q23K
-dlon(:) = [-154.974197,-146.339905]; %A22K,Q23K
+info.a = {'H16K','Q23K'};
+
+% dlat(:) = [59.652401,59.4296]; %desire lat - P19K,Q23K
+% dlon(:) = [-153.231903,-146.339905]; %P19K,Q23K
+% dlat(:) = [60.384899,59.4296]; %desire lat - M11K,Q23K
+% dlon(:) = [-166.201096,-146.339905]; %M11K,Q23K
+% dlat(:) = [63.886398,59.4296]; %desire lat - I17KK,Q23K
+% dlon(:) = [-160.695007,-146.339905]; %I17K,Q23K
+dlat(:) = [64.637901,59.4296]; %desire lat - H16K,Q23K
+dlon(:) = [-162.238998,-146.339905]; %H16K,Q23K
+% dlat(:) = [65.3936,59.4296]; %desire lat - G16K,Q23K
+% dlon(:) = [-162.354706,-146.339905]; %G16K,Q23K
+% dlat(:) = [65.474197,59.4296]; %desire lat - F14K,Q23K
+% dlon(:) = [-166.328796,-146.339905]; %F14K,Q23K
+% dlat(:) = [67.698799,59.4296]; %desire lat - D17K,Q23K
+% dlon(:) = [-163.083099,-146.339905]; %D17K,Q23K
+% dlat(:) = [68.274597,59.4296]; %desire lat - C16K,Q23K
+% dlon(:) = [-165.343597,-146.339905]; %C16K,Q23K
+% dlat(:) = [69.364098,59.4296]; %desire lat - B18K,Q23K
+% dlon(:) = [-161.801605,-146.339905]; %B18K,Q23K
+% dlat(:) = [71.003304,59.4296]; %desire lat - A22K,Q23K
+% dlon(:) = [-154.974197,-146.339905]; %A22K,Q23K
 % dlat(:) = [70.339996,59.4296]; %desire lat - B22K,Q23K
 % dlon(:) = [-153.419601,-146.339905]; %B22K,Q23K
 % dlat(:) = [69.835999,59.4296]; %desire lat - C23K,Q23K
@@ -64,7 +83,8 @@ while i <= length(dlat)
         i = i + 1;
     end
 end
-%% bin frequencies into average
+
+% ************** bin frequencies into average *************
 % rangel= 1/20; rangem= 1/13; micName = 'Primary'; %primary
 % rangel= 1/10; rangem= 1/5; micName = 'Secondary'; %secondary
 % rangel= 1/5; rangem= 1/2.5; micName = 'Short'; %short
@@ -90,7 +110,7 @@ end
 %     norm_bin_data(:,i) = (binnedData(:,i)-min(binnedData(:,i)))/ (max(binnedData(:,i))-min(binnedData(:,i)));
 % end
 
-%% robust fit
+% robust fit
 xdat = [binnedData(:,2) ci(2:length(ci),1)];
 b = robustfit(xdat,binnedData(:,1));
 fun = @(ps,xdata)ps(1)+(ps(2)*xdata(:,1))+(ps(3)*xdata(:,2));
@@ -101,8 +121,9 @@ figure(1);clf; hold on
 subplot(2,1,1);hold on
 
 % plot(datesLeft, fun(ps,xdata),'b-','LineWidth', 2);
-plot(dates1,fun(b,xdat),'LineWidth', 2);
 plot(dates1, binnedData(:,1),'r-','LineWidth',2);
+plot(dates1,fun(b,xdat),'LineWidth', 2);
+
 
 ylabel('Power(dB)'); 
 cor = corrcoef(binnedData(:,1),fun(b,xdat),'Rows','complete');
