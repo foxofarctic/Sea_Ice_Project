@@ -6,13 +6,14 @@ load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/ice_data_aug21_13_jun1_1
 lat = iceDat(1).lat;
 lon = iceDat(1).lon;
 dates = datenum('2013-08-21'):datenum('2019-06-01');
-info.a = {'A21K','Q23K'};
-numpx =1;
+info.a = {'P19K','Q23K'};
+numpx =16;
 
 %% set frequency and pixel specifications also normalizes data
 
-dlat(:) = [71.322098,59.4296]; %desire lat - A21K,Q23K
-dlon(:) = [-156.617493,-146.339905]; %A21K,Q23K
+
+dlat(:) = [59.652401,59.4296]; %desire lat - P19K,Q23K
+dlon(:) = [-153.231903,-146.339905]; %P19K,Q23K
 
 % finds the pixel closest to station
 i = 1;

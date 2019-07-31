@@ -4,16 +4,60 @@ load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/ice_data_aug21_13_jun1_1
 %%
 tic
 addpath('/media/lucas/Elements/IRIS_Sea_Ice/matlab');
-info.a = {'H16K','Q23K'};
+info.a = {'J20K','Q23K'};
 
+% dlat(:) = [65.8937,59.4296]; %desire lat - H22K,Q23K
+% dlon(:) = [-151.377304,-146.339905]; %H22K,Q23K
+
+% dlat(:) = [66.921402,59.4296]; %desire lat - G22K,Q23K
+% dlon(:) = [-151.507294 ,-146.339905]; %G22K,Q23K
+
+% dlat(:) = [67.507599,59.4296]; %desire lat - F22K,Q23K
+% dlon(:) = [-152.179001,-146.339905]; %F22K,Q23K
+
+% dlat(:) = [68.1343,59.4296]; %desire lat - E22K,Q23K
+% dlon(:) = [-151.813202,-146.339905]; %E22K,Q23K
+% dlat(:) = [68.879898,59.4296]; %desire lat - D22K,Q23K
+% dlon(:) = [-152.682098,-146.339905]; %D22K,Q23K
+
+% dlat(:) = [63.356899,59.4296]; %desire lat - K20K,Q23K
+% dlon(:) = [-154.070007,-146.339905]; %K20K,Q23K
+dlat(:) = [64.176697,59.4296]; %desire lat - J20K,Q23K
+dlon(:) = [-154.146698,-146.339905]; %J20K,Q23K
+% dlat(:) = [64.796204,59.4296]; %desire lat - I20K,Q23K
+% dlon(:) = [-154.478302,-146.339905]; %I20K,Q23K
+% dlat(:) = [65.492401,59.4296]; %desire lat - H20K,Q23K
+% dlon(:) = [-154.880798,-146.339905]; %H20K,Q23K
+% dlat(:) = [67.048599,59.4296]; %desire lat - F20K,Q23K
+% dlon(:) = [-155.725098,-146.339905]; %F20K,Q23K
+% dlat(:) = [68.713203,59.4296]; %desire lat - E20K,Q23K
+% dlon(:) = [-156.613205,-146.339905]; %E20K,Q23K
+% dlat(:) = [68.2575,59.4296]; %desire lat - D20K,Q23K
+% dlon(:) = [-156.188507,-146.339905]; %D20K,Q23K
+% dlat(:) = [70.007896,59.4296]; %desire lat - B20K,Q23K
+% dlon(:) = [-157.159897,-146.339905]; %B20K,Q23K
+% dlat(:) = [65.18,59.4296]; %desire lat - I21K,Q23K
+% dlon(:) = [-151.982193,-146.339905]; %I21K,Q23K
+% dlat(:) = [65.657097,59.4296]; %desire lat - H21K,Q23K
+% dlon(:) = [-152.804993,-146.339905]; %H21K,Q23K
+% dlat(:) = [66.515602,59.4296]; %desire lat - G21K,Q23K
+% dlon(:) = [-153.505798 ,-146.339905]; %G21K,Q23K
+% dlat(:) = [67.222099,59.4296]; %desire lat - F21K,Q23K
+% dlon(:) = [-153.483002,-146.339905]; %F21K,Q23K
+% dlat(:) = [68.441399,59.4296]; %desire lat - E21K,Q23K
+% dlon(:) = [-153.972107,-146.339905]; %E21K,Q23K
+% dlat(:) = [69.156502,59.4296]; %desire lat - C21K,Q23K
+% dlon(:) = [-154.783295,-146.339905]; %C21K,Q23K
+% dlat(:) = [69.621101,59.4296]; %desire lat - B21K,Q23K
+% dlon(:) = [-154.612793,-146.339905]; %B21K,Q23K
 % dlat(:) = [59.652401,59.4296]; %desire lat - P19K,Q23K
 % dlon(:) = [-153.231903,-146.339905]; %P19K,Q23K
 % dlat(:) = [60.384899,59.4296]; %desire lat - M11K,Q23K
 % dlon(:) = [-166.201096,-146.339905]; %M11K,Q23K
 % dlat(:) = [63.886398,59.4296]; %desire lat - I17KK,Q23K
 % dlon(:) = [-160.695007,-146.339905]; %I17K,Q23K
-dlat(:) = [64.637901,59.4296]; %desire lat - H16K,Q23K
-dlon(:) = [-162.238998,-146.339905]; %H16K,Q23K
+% dlat(:) = [64.637901,59.4296]; %desire lat - H16K,Q23K
+% dlon(:) = [-162.238998,-146.339905]; %H16K,Q23K
 % dlat(:) = [65.3936,59.4296]; %desire lat - G16K,Q23K
 % dlon(:) = [-162.354706,-146.339905]; %G16K,Q23K
 % dlat(:) = [65.474197,59.4296]; %desire lat - F14K,Q23K
@@ -51,38 +95,49 @@ dlon(:) = [-162.238998,-146.339905]; %H16K,Q23K
 % dlat(:) = [71.987099,59.4296]; %desire lat - A36M,Q23K
 % dlon(:) = [-125.2472,-146.339905]; %A36M,Q23K
 
-start ='2013-08-21';
-% start ='2013-08-22';
+% start ='2013-08-21';
+start ='2014-08-16';
 en = '2019-06-01';
 for i = 1:length(info.a)
     [dates,freqTemp,dataTemp(:,:,i)] = get_spec_data(char(info.a(i)),start,en);
 end
 % turn all 0 data to NaN
 dataTemp(dataTemp(:,:,:) == 0) = NaN;
+iceInd = length(datenum('2013-08-21'):datenum(start))+1;
 toc
 %% set frequency and pixel specifications
-dates1 = [datenum(start):datenum(en)-1];
+dates1 = [datenum(start):(datenum(en)-1)];
 
 % extract data from iceDat struct
 lat = iceDat(1).lat;
 lon = iceDat(1).lon;
 
-% finds the pixel closest to station
+% finds the closest numpx pixels to station
+numpx = 16; % 16 for now 
 i = 1;
 while i <= length(dlat)
-    [~, ind] = min(abs(lat(:)-dlat(i))+abs(lon(:)-dlon(i)));
-    [r(i), c(i)] = ind2sub(size(lat),ind);
-    
-    % take all ice data from struct and squeeze the info needed to array
-    ci(:,i) = squeeze(cat(3, iceDat(1).ci(r(i),c(i),:), iceDat(2).ci(r(i),c(i),:), iceDat(3).ci(r(i),c(i),:))); 
-
-    %checks if all nans
-    if (all(isnan(ci(:,i))))
-        lat(r(i),c(i)) = NaN; lon(r(i),c(i)) = NaN;
-    else
-        i = i + 1;
+    x = 1;
+    while x <= numpx
+        [~, ind] = min(abs(lat(:)-dlat(i))+abs(lon(:)-dlon(i)));
+        [r(i), c(i)] = ind2sub(size(lat),ind);
+        
+        % take all ice data from struct and squeeze the info needed to array
+        ci1(:,x,i) = squeeze(cat(3, iceDat(1).ci(r(i),c(i),:), iceDat(2).ci(r(i),c(i),:), iceDat(3).ci(r(i),c(i),:)));
+        
+        %checks if all nans
+        if (all(isnan(ci1(:,x,i))))
+            lat(r(i),c(i)) = NaN; lon(r(i),c(i)) = NaN;
+        else
+            lat(r(i),c(i)) = NaN; lon(r(i),c(i)) = NaN;
+            pixelx(x,i)= r(i);
+            pixely(x,i)= c(i);
+            x = x + 1;
+        end
     end
+    ci(:,i) = mean(ci1(iceInd:end,:,i),2);
+    i = i+1;
 end
+%%
 
 % ************** bin frequencies into average *************
 % rangel= 1/20; rangem= 1/13; micName = 'Primary'; %primary
@@ -111,7 +166,7 @@ end
 % end
 
 % robust fit
-xdat = [binnedData(:,2) ci(2:length(ci),1)];
+xdat = [binnedData(:,2) ci(:,1)];
 b = robustfit(xdat,binnedData(:,1));
 fun = @(ps,xdata)ps(1)+(ps(2)*xdata(:,1))+(ps(3)*xdata(:,2));
 
