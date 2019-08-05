@@ -100,6 +100,7 @@ for i=1:4
 end
 %% make plot of PSD medians
 clear;
+addpath('/media/lucas/Elements/IRIS_Sea_Ice/matlab/')
 info.a = {'A19K','A21K','A22K','B22K','C36M','A36M','Q23K'};
 figure(2);clf;hold on
 for i = 1:length(info.a)
