@@ -1,6 +1,6 @@
 % % Tsai eq -- Ice Coefficient analysis 
 clear;close all;
-load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/TsaiCoeffs.mat');
+load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/TsaiCoeffsFixed.mat');
 
 figure(2);clf;hold on
 x = [TsaiCoeffs.DistancefromCoastkm]';

@@ -4,8 +4,13 @@ startDate = startTime;
 endDate = endTime;
 station = station;
 numFreq = 96;
+net = 'TA'
 
-t = sprintf('curl -g http://service.iris.edu/mustang/noise-mode-timeseries/1/query?target=TA.%s.--.BHZ.M\134\46starttime=%s\134\46endtime=%s\134\46format=text\134\46frequencies=[0.005,20] > temp.txt', station, startDate, endDate)
+if strcmp(station,'UNV')
+    net = 'AK'
+end
+
+t = sprintf('curl -g http://service.iris.edu/mustang/noise-mode-timeseries/1/query?target=%s.%s.--.BHZ.M\134\46starttime=%s\134\46endtime=%s\134\46format=text\134\46frequencies=[0.005,20] > temp.txt',net,station,startDate,endDate)
 system(t)
 
 numDays = datenum(endDate)-datenum(startDate);

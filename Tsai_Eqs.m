@@ -4,11 +4,13 @@ load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/ice_data_aug21_13_jun1_1
 %%
 tic
 addpath('/media/lucas/Elements/IRIS_Sea_Ice/matlab');
-info.a = {'H27K','Q23K'};
+info.a = {'A21K','UNV'};
 
-dlat(:) = [66.230499,59.4296]; %desire lat - H27K,Q23K
-dlon(:) = [-141.526505,-146.339905]; %H27K,Q23K
+dlat(:) = [71.322098,53.8452]; %desire lat - A21K,UNV
+dlon(:) = [-156.617493,-166.504501]; %A21K,UNV
 
+% dlat(:) = [66.230499,59.4296]; %desire lat - H27K,Q23K
+% dlon(:) = [-141.526505,-146.339905]; %H27K,Q23
 % dlat(:) = [66.8088,59.4296]; %desire lat - G27K,Q23K
 % dlon(:) = [-141.654907,-146.339905]; %G27K,Q23K
 % dlat(:) = [68.186096,59.4296]; %desire lat - E27K,Q23K
