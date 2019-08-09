@@ -30,9 +30,9 @@ geoscatter([TsaiCoeffs.Latitude],[TsaiCoeffs.Longitude],'filled','SizeData',100)
 geobasemap('landcover')
 legend('Stations Used for Distance Analysis')
 %% graphs of different transects -- west east
-clear; close all;
+clear; 
 % load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/TsaiCoeffs.mat');
-load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/TsaiCoeffsFixed.mat');
+load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/TsaiCoeffs.mat');
 % TsaiCoeffs = table2struct(TsaiCoefficients16px);
 transectGroup = {["18","19","20","21","22"], ["23","24","24","25","26","27"]};
 names = ["Western","Eastern"];

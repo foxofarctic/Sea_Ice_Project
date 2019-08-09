@@ -1,6 +1,6 @@
 %%
 clear
-load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/TsaiCoeffsFixed.mat');
+load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/TsaiCoeffs.mat');
 start ='2014-08-16';
 en = '2019-06-01';
 tic
