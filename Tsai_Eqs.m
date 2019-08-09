@@ -4,10 +4,10 @@ load('/media/lucas/Elements/IRIS_Sea_Ice/matlab/iceData/ice_data_aug21_13_jun1_1
 %%
 tic
 addpath('/media/lucas/Elements/IRIS_Sea_Ice/matlab');
-info.a = {'A21K','UNV'};
+info.a = {'A21K','Q23K'};
 
-dlat(:) = [71.322098,53.8452]; %desire lat - A21K,UNV
-dlon(:) = [-156.617493,-166.504501]; %A21K,UNV
+% dlat(:) = [71.322098,53.8452]; %desire lat - A21K,UNV
+% dlon(:) = [-156.617493,-166.504501]; %A21K,UNV
 
 % dlat(:) = [66.230499,59.4296]; %desire lat - H27K,Q23K
 % dlon(:) = [-141.526505,-146.339905]; %H27K,Q23
@@ -141,8 +141,8 @@ dlon(:) = [-156.617493,-166.504501]; %A21K,UNV
 % dlon(:) = [-138.736694,-146.339905]; %D28M,Q23K
 % dlat(:) = [68.388901,59.4296]; %desire lat - E29M,Q23K
 % dlon(:) = [-137.896896,-146.339905]; %E29M,Q23K
-% dlat(:) = [71.322098,59.4296]; %desire lat - A21K,Q23K
-% dlon(:) = [-156.617493,-146.339905]; %A21K,Q23K
+dlat(:) = [71.322098,59.4296]; %desire lat - A21K,Q23K
+dlon(:) = [-156.617493,-146.339905]; %A21K,Q23K
 % dlat(:) = [69.347504,59.4296]; %desire lat - C36M,Q23K
 % dlon(:) = [-124.070297,-146.339905]; %C36M,Q23K
 % dlat(:) = [71.987099,59.4296]; %desire lat - A36M,Q23K
